@@ -2,16 +2,23 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/raolootnexii/trasle/song"
 )
 
 func main() {
 
 	app := fiber.New()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("O mundo pertence a nós")
-	})
+	setupRoutes(app)
 
 	app.Listen(":3000")
+
+}
+
+func setupRoutes(app *fiber.App) {
+	api := app.Group("/api/v1")
+
+	songRoutes := api.Group("/song")
+	songRoutes.Get("/", song.GetSongs)
 
 }
