@@ -9,9 +9,10 @@ import (
 
 type Song struct {
 	gorm.Model
-	Title  string `json:"name"`
-	Author string `json:"author"`
-	Rating int    `json:"rating"`
+	Title  string `json:"title";gorm:"not null"`
+	Lyrics string `json:"lyrics";gorm:"not null"`
+	Author string `json:"author";gorm:"not null"`
+	Rating int    `json:"rating";gorm:"not null"`
 }
 
 // GetSongs - get all songs
@@ -20,4 +21,18 @@ func GetSongs(c *fiber.Ctx) error {
 	var songs []Song
 	db.Find(&songs)
 	return c.JSON(songs)
+}
+
+// CreateSong - create a song
+func CreateSong(c *fiber.Ctx) error {
+	db := database.DBConn
+	song := new(Song)
+
+	if err := c.BodyParser(song); err != nil {
+		return err
+	}
+
+	db.Create(&song)
+	c.JSON(song)
+	return c.SendStatus(201)
 }

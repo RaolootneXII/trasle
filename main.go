@@ -15,6 +15,7 @@ func setupRoutes(app *fiber.App) {
 
 	songRoutes := api.Group("/song")
 	songRoutes.Get("/", song.GetSongs)
+	songRoutes.Post("/", song.CreateSong)
 }
 
 func initDatabase() {
