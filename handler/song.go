@@ -1,24 +1,15 @@
-package song
+package handler
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/jinzhu/gorm"
 	"github.com/raolootnexii/trasle/database"
+	"github.com/raolootnexii/trasle/model"
 )
-
-// Song - is a song
-type Song struct {
-	gorm.Model
-	Title  string `json:"title" gorm:"not null"`
-	Lyrics string `json:"lyrics" gorm:"not null"`
-	Author string `json:"author" gorm:"not null"`
-	Rating int    `json:"rating" gorm:"not null"`
-}
 
 // GetSongs - get all songs
 func GetSongs(c *fiber.Ctx) error {
 	db := database.DBConn
-	var songs []Song
+	var songs []model.Song
 	db.Find(&songs)
 	return c.JSON(songs)
 }
@@ -27,7 +18,7 @@ func GetSongs(c *fiber.Ctx) error {
 func GetSong(c *fiber.Ctx) error {
 	db := database.DBConn
 	id := c.Params("id")
-	song := new(Song)
+	song := new(model.Song)
 	db.First(&song, id)
 	if song.ID == 0 {
 		c.JSON(fiber.Map{
@@ -41,7 +32,7 @@ func GetSong(c *fiber.Ctx) error {
 // CreateSong - create a song
 func CreateSong(c *fiber.Ctx) error {
 	db := database.DBConn
-	song := new(Song)
+	song := new(model.Song)
 
 	if err := c.BodyParser(song); err != nil {
 		return err
@@ -57,7 +48,7 @@ func DeleteSong(c *fiber.Ctx) error {
 	if c.Params("id") != "" {
 		id := c.Params("id")
 		db := database.DBConn
-		song := new(Song)
+		song := new(model.Song)
 		db.Delete(&song, id)
 		c.JSON(fiber.Map{
 			"message": "deleted",
@@ -75,7 +66,7 @@ func UpdateSong(c *fiber.Ctx) error {
 	if c.Params("id") != "" {
 		id := c.Params("id")
 		db := database.DBConn
-		song := new(Song)
+		song := new(model.Song)
 		db.First(&song, id)
 		if song.ID == 0 {
 			c.JSON(fiber.Map{
